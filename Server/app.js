@@ -7,7 +7,6 @@ const session = require("express-session");
 const {RedisStore} = require("connect-redis");
 
 const userRoutes = require("./routes/user.routes");
-const userMovieRoutes = require("./routes/userMovie.routes");
 const watchedMovie = require("./routes/recentlyViewed.routes");
 const recommendRoutes = require("./routes/recommended.routes");
 const userMediaRoutes = require("./routes/userMedia.routes");
@@ -63,7 +62,6 @@ connectDB();
 app.use("/auth", require("./routes/auth"));
 
 app.use("/api/users", userRoutes);
-app.use("/api/user-movies", userMovieRoutes);
 app.use("/api/recently", watchedMovie);
 app.use("/api/recommend", recommendRoutes);
 app.use("/api", userMediaRoutes);

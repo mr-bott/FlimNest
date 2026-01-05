@@ -1,16 +1,28 @@
-const User = require("../models/user.model");       // your User model
+const User = require("../models/user.model");
 const UserMedia = require("../models/userMedia.model");
+const redisClient = require("../rateLimiter/redisClient");
 
 exports.getUserProfile = async (req, res) => {
   try {
     const userId = req.user.id;
+    // CHECK CACHE FIRST
+    const cacheKey = `userProfile:${userId}`;
+    const cachedProfile = await redisClient.get(cacheKey);
+    if (cachedProfile) {
+      console.log("Serving profile from cache");
+      return res.json(JSON.parse(cachedProfile));
+    }
 
-    // 1️⃣ Get user basic details
+    // FETCH USER
     const user = await User.findById(userId).select(
-      "name email createdAt"
+      "name email profilePic createdAt"
     );
 
-    // 2️⃣ Get media data
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // FETCH MEDIA
     const userMedia = await UserMedia.findOne({ user: userId });
 
     let watchedCount = 0;
@@ -24,33 +36,40 @@ exports.getUserProfile = async (req, res) => {
         if (item.status === "watchlist") watchlistCount++;
         if (item.liked) likedCount++;
 
-        // count genres
         item.genres.forEach(genreId => {
           genreMap[genreId] = (genreMap[genreId] || 0) + 1;
         });
       });
     }
 
-    // 3️⃣ Sort top genres
+    // TOP GENRES
     const topGenres = Object.entries(genreMap)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5)
       .map(([genreId, count]) => ({ genreId, count }));
 
-    res.json({
+    const profileResponse = {
       user: {
         name: user.name,
         email: user.email,
-        joinedAt: user.createdAt
+        joinedAt: user.createdAt,
+        profilePic: user.profilePic,
       },
       stats: {
         watchedCount,
         watchlistCount,
-        likedCount
+        likedCount,
       },
-      topGenres
-    });
+      topGenres,
+    };
 
+    // STORE IN REDIS
+    await redisClient.set(
+      cacheKey,
+      JSON.stringify(profileResponse),
+      { EX: 600 } // 10 minutes TTL
+    );
+    res.json(profileResponse);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

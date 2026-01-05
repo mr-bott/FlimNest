@@ -1,52 +1,21 @@
 const UserMedia = require("../models/userMedia.model");
+const redisClient = require("../rateLimiter/redisClient");
 
-// POST /api/media
-// exports.addMedia = async (req, res) => {
-//   try {
-//     const userId = req.user.id;
-//     const {
-//       tmdbId,
-//       mediaType,
-//       title,
-//       posterPath,
-//       genres = [],
-//       rating = null,
-//       status, // "watched" | "watchlist"
-//       liked = false
-//     } = req.body;
+// helper functions for cache keys
+const keys = {
+  all: (userId) => `media:user:${userId}`,
+  status: (userId, status) => `media:user:${userId}:status:${status}`,
+  movie: (userId, tmdbId) => `media:user:${userId}:movie:${tmdbId}`,
+};
 
-//     if (!tmdbId || !mediaType || !title || !status) {
-//       return res.status(400).json({ message: "Missing required fields" });
-//     }
+const invalidateAll = async (userId) => {
+  await redisClient.del(keys.all(userId));
+  await redisClient.del(keys.status(userId, "watched"));
+  await redisClient.del(keys.status(userId, "watchlist"));
+  // movie-level keys are invalidated on demand
+};
 
-//     const watchedAt = status === "watched" ? new Date() : null;
-
-//     const userMedia = await UserMedia.findOneAndUpdate(
-//       { user: userId },
-//       {
-//         $addToSet: {
-//           media: {
-//             tmdbId,
-//             mediaType,
-//             title,
-//             posterPath,
-//             genres,
-//             rating,
-//             status,
-//             liked,
-//             watchedAt
-//           }
-//         }
-//       },
-//       { new: true, upsert: true }
-//     );
-
-//     res.status(201).json(userMedia);
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// };
-
+// ADD / UPDATE (WRITE-THROUGH)
 exports.addMedia = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -57,8 +26,8 @@ exports.addMedia = async (req, res) => {
       posterPath,
       genres = [],
       rating = null,
-      status, // "watched" | "watchlist"
-      liked = false
+      status,
+      liked = false,
     } = req.body;
 
     if (!tmdbId || !mediaType || !title || !status) {
@@ -67,10 +36,8 @@ exports.addMedia = async (req, res) => {
 
     const watchedAt = status === "watched" ? new Date() : null;
 
-    // 1️⃣ Find user media document
     let userMedia = await UserMedia.findOne({ user: userId });
 
-    // 2️⃣ If no document → create new
     if (!userMedia) {
       userMedia = await UserMedia.create({
         user: userId,
@@ -83,36 +50,34 @@ exports.addMedia = async (req, res) => {
           rating,
           status,
           liked,
-          watchedAt
-        }]
+          watchedAt,
+        }],
       });
+
+      await invalidateAll(userId);
+      await redisClient.del(keys.movie(userId, tmdbId));
 
       return res.status(201).json(userMedia);
     }
 
-    // 3️⃣ Check if media already exists
-    const existingMedia = userMedia.media.find(
-      item => item.tmdbId === tmdbId
-    );
+    const existing = userMedia.media.find(m => m.tmdbId === tmdbId);
 
-    // 4️⃣ If exists → UPDATE
-    if (existingMedia) {
-      existingMedia.status = status;
-      existingMedia.rating = rating;
-      existingMedia.liked = liked;
-      existingMedia.genres = genres;
-      existingMedia.posterPath = posterPath;
-      existingMedia.watchedAt = watchedAt;
+    if (existing) {
+      existing.status = status;
+      existing.rating = rating;
+      existing.liked = liked;
+      existing.genres = genres;
+      existing.posterPath = posterPath;
+      existing.watchedAt = watchedAt;
 
       await userMedia.save();
 
-      return res.status(200).json({
-        message: "Media updated",
-        media: existingMedia
-      });
+      await invalidateAll(userId);
+      await redisClient.del(keys.movie(userId, tmdbId));
+
+      return res.json({ message: "Media updated", media: existing });
     }
 
-    // 5️⃣ If NOT exists → ADD
     userMedia.media.push({
       tmdbId,
       mediaType,
@@ -122,85 +87,106 @@ exports.addMedia = async (req, res) => {
       rating,
       status,
       liked,
-      watchedAt
+      watchedAt,
     });
 
     await userMedia.save();
 
+    await invalidateAll(userId);
+    await redisClient.del(keys.movie(userId, tmdbId));
+
     res.status(201).json({
       message: "Media added",
-      media: userMedia.media[userMedia.media.length - 1]
+      media: userMedia.media[userMedia.media.length - 1],
     });
-
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-
-// GET /api/media
+// GET ALL (CACHE-ASIDE) 
 exports.getAllMedia = async (req, res) => {
   try {
-    console.log("dgdg", req.params);
-    const userMedia = await UserMedia.findOne({ user: req.params.id });
-    res.json(userMedia?.media || []);
+    const userId = req.params.id;
+    const cacheKey = keys.all(userId);
+
+    const cached = await redisClient.get(cacheKey);
+    if (cached) return res.json(JSON.parse(cached));
+
+    const userMedia = await UserMedia.findOne({ user: userId });
+    const media = userMedia?.media || [];
+
+    await redisClient.set(cacheKey, JSON.stringify(media), { EX: 600 });
+    res.json(media);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-//get status
-// GET movie status by tmdbId
+// GET MOVIE STATUS (CACHE-ASIDE)
 exports.getMovieStatus = async (req, res) => {
   try {
+    const userId = req.user.id;
     const { tmdbId } = req.params;
+    const cacheKey = keys.movie(userId, tmdbId);
 
-    const userMedia = await UserMedia.findOne({ user: req.user.id });
+    const cached = await redisClient.get(cacheKey);
+    if (cached){
+       return res.json(JSON.parse(cached));
 
+    }
+    const userMedia = await UserMedia.findOne({ user: userId });
     if (!userMedia) {
-      return res.json({ status: null, liked: false });
+      const empty = { status: null, liked: false };
+      await redisClient.set(cacheKey, JSON.stringify(empty), { EX: 300 });
+      return res.json(empty);
     }
 
     const mediaItem = userMedia.media.find(
       item => item.tmdbId === Number(tmdbId)
     );
 
-    if (!mediaItem) {
-      return res.json({ status: null, liked: false });
-    }
+    const result = mediaItem
+      ? {
+          status: mediaItem.status,
+          liked: mediaItem.liked,
+          rating: mediaItem.rating,
+          watchedAt: mediaItem.watchedAt,
+        }
+      : { status: null, liked: false };
 
-    res.json({
-      status: mediaItem.status,   // "watched" | "watchlist"
-      liked: mediaItem.liked,
-      rating: mediaItem.rating,
-      watchedAt: mediaItem.watchedAt
-    });
-
+    await redisClient.set(cacheKey, JSON.stringify(result), { EX: 300 });
+    res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-// GET /api/media/:status
+// GET BY STATUS (CACHE-ASIDE)
 exports.getByStatus = async (req, res) => {
   try {
+    const userId = req.user.id;
     const { status } = req.params;
-// console.log("statusjhkjh", status);
-    const userMedia = await UserMedia.findOne({ user: req.user.id });
+    const cacheKey = keys.status(userId, status);
 
-    const filtered = userMedia?.media.filter(
-      item => item.status === status
-    );
+    const cached = await redisClient.get(cacheKey);
+    if (cached){
+       return res.json(JSON.parse(cached));
+    }
+    const userMedia = await UserMedia.findOne({ user: userId });
+    const filtered = userMedia?.media.filter(m => m.status === status) || [];
 
-    res.json(filtered || []);
+    await redisClient.set(cacheKey, JSON.stringify(filtered), { EX: 600 });
+    res.json(filtered);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-// PUT /api/media/:tmdbId
+// UPDATE MEDIA (WRITE-THROUGH)
 exports.updateMedia = async (req, res) => {
   try {
+    const userId = req.user.id;
     const { tmdbId } = req.params;
     const updates = req.body;
 
@@ -209,20 +195,13 @@ exports.updateMedia = async (req, res) => {
     }
 
     const userMedia = await UserMedia.findOneAndUpdate(
-      {
-        user: req.user.id,
-        "media.tmdbId": Number(tmdbId)
-      },
-      {
-        $set: {
-          "media.$": {
-            ...updates,
-            tmdbId: Number(tmdbId)
-          }
-        }
-      },
+      { user: userId, "media.tmdbId": Number(tmdbId) },
+      { $set: { "media.$": { ...updates, tmdbId: Number(tmdbId) } } },
       { new: true }
     );
+
+    await invalidateAll(userId);
+    await redisClient.del(keys.movie(userId, tmdbId));
 
     res.json(userMedia);
   } catch (err) {
@@ -230,18 +209,20 @@ exports.updateMedia = async (req, res) => {
   }
 };
 
-// PUT /api/media/:tmdbId/like
+// TOGGLE LIKE (WRITE-THROUGH)
 exports.toggleLike = async (req, res) => {
   try {
+    const userId = req.user.id;
     const { tmdbId } = req.params;
 
-    const userMedia = await UserMedia.findOne({ user: req.user.id });
-    const mediaItem = userMedia.media.find(
-      m => m.tmdbId === Number(tmdbId)
-    );
+    const userMedia = await UserMedia.findOne({ user: userId });
+    const mediaItem = userMedia.media.find(m => m.tmdbId === Number(tmdbId));
 
     mediaItem.liked = !mediaItem.liked;
     await userMedia.save();
+
+    await invalidateAll(userId);
+    await redisClient.del(keys.movie(userId, tmdbId));
 
     res.json(mediaItem);
   } catch (err) {
@@ -249,24 +230,23 @@ exports.toggleLike = async (req, res) => {
   }
 };
 
-// DELETE /api/media/:tmdbId
+// DELETE MEDIA (WRITE-THROUGH)
 exports.deleteMedia = async (req, res) => {
   try {
+    const userId = req.user.id;
     const { tmdbId } = req.params;
 
     const userMedia = await UserMedia.findOneAndUpdate(
-      { user: req.user.id },
-      {
-        $pull: {
-          media: { tmdbId: Number(tmdbId) }
-        }
-      },
+      { user: userId },
+      { $pull: { media: { tmdbId: Number(tmdbId) } } },
       { new: true }
     );
+
+    await invalidateAll(userId);
+    await redisClient.del(keys.movie(userId, tmdbId));
 
     res.json(userMedia);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
-

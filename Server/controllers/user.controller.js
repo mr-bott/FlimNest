@@ -1,4 +1,5 @@
 const User = require("../models/user.model");
+const redisClient = require("../rateLimiter/redisClient");
 
 exports.createUser = async (req, res) => {
   try {
@@ -10,8 +11,7 @@ exports.createUser = async (req, res) => {
       });
 
     }
-   
-    const user = await User.create(req.body); // here problem i ckeked through consolelog
+    const user = await User.create(req.body);
     res.status(201).json(user);
   } catch (err) {
     res.status(400).json({ error: err.message });

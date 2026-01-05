@@ -32,6 +32,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    profilePic: {
+      type: String,
+      default: null,
+    },
 
     avatar: String,
   },
