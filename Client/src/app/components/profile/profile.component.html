@@ -1,0 +1,81 @@
+<div class="profile-page" *ngIf="user && stats">
+
+  <!-- TOP SECTION -->
+  <div class="profile-top">
+
+    <!-- LEFT : PROFILE IMAGE -->
+    <div class="profile-left">
+      <img src="https://i.pravatar.cc/200" alt="Profile" class="profile-img" />
+
+      <h2 class="username">{{ user.name }}</h2>
+      <p class="email">{{ user.email }}</p>
+    </div>
+
+    <!-- RIGHT : USER DETAILS -->
+    <div class="profile-right">
+      <h3>User Details</h3>
+
+      <div class="detail">
+        <span>Joined</span>
+        <strong>{{ user.joinedAt | date:'MMM yyyy' }}</strong>
+      </div>
+
+      <div class="detail">
+        <span>Total Watched</span>
+        <strong>{{ stats.watchedCount }}</strong>
+      </div>
+
+      <div class="detail">
+        <span>Watchlist</span>
+        <strong>{{ stats.watchlistCount }}</strong>
+      </div>
+
+      <button class="edit-btn">Edit Profile</button>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM : ANALYTICS -->
+  <div class="profile-analytics">
+
+    <h3>Analytics</h3>
+
+    <!-- STATS CARDS -->
+    <div class="stats">
+      <div class="stat-card">
+        <h4>🎬 Watched</h4>
+        <p>{{ stats.watchedCount }}</p>
+      </div>
+
+      <div class="stat-card">
+        <h4>❤️ Liked</h4>
+        <p>{{ stats.likedCount }}</p>
+      </div>
+
+      <div class="stat-card">
+        <h4>⏰ Watchlist</h4>
+        <p>{{ stats.watchlistCount }}</p>
+      </div>
+    </div>
+
+    <!-- BAR CHART -->
+    <div class="chart" *ngIf="topGenres?.length">
+      <h4>Top Genres</h4>
+
+      <div class="bar" *ngFor="let genre of topGenres">
+        <span>{{ genreMap[genre.genreId] || 'Genre ' + genre.genreId }}</span>
+
+        <div class="bar-fill" [style.width.%]="genre.count * 10"></div>
+      </div>
+      <!-- PIE CHART -->
+      <div class="chart-container">
+        <h4>Genre Distribution</h4>
+        <canvas #genreChart></canvas>
+      </div>
+
+
+    </div>
+
+  </div>
+
+</div>

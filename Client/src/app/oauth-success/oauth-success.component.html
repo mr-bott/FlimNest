@@ -1,0 +1,13 @@
+<div class="oauth-container">
+  <div *ngIf="loading" class="card success">
+    <h2>Login Successful 🎉</h2>
+    <p>Signing you in securely...</p>
+    <div class="loader"></div>
+  </div>
+
+  <div *ngIf="error" class="card error">
+    <h2>Authentication Failed ❌</h2>
+    <p>No token received. Please try logging in again.</p>
+    <button routerLink="/login">Go to Login</button>
+  </div>
+</div>

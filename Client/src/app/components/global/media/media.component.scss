@@ -1,0 +1,76 @@
+.watch-providers {
+  margin-top: 20px;
+  display: flex;
+  align-items:center;
+  justify-content: space-between;
+  width:78%;
+}
+.Available{
+    // font-weight: bold;
+    margin-right: 10px;
+    font-size:large;
+}
+.provider-list {
+  display: flex;
+  margin-top:3%;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.provider-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80px;
+  text-align: center;
+}
+
+.provider-card img {
+  width:50%;
+  height: auto;
+  margin-bottom: 6px;
+}
+
+
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+/* base button */
+.btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: #eafff2;
+  transition: background 0.25s ease, transform 0.2s ease;
+}
+
+/* watched - solid green */
+.btn.watched {
+  background: linear-gradient(135deg, #17291C, #16a34a);
+}
+
+/* watch later - green-blue */
+.btn.later {
+  background: linear-gradient(135deg, #53750f, #059669);
+}
+
+/* hover effect (desktop) */
+@media (hover: hover) {
+  .btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+  }
+}
+
+/* active click */
+.btn:active {
+  transform: scale(0.95);
+}
+

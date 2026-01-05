@@ -1,0 +1,85 @@
+// const passport = require('passport');
+// const GoogleStrategy = require('passport-google-oauth20').Strategy;
+// const jwt = require('jsonwebtoken');
+// const User = require('../models/user.model');
+
+// passport.use(
+//   new GoogleStrategy(
+//     {
+//       clientID: process.env.GOOGLE_CLIENT_ID,
+//       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+//       callbackURL: '/auth/google/callback'
+//     },
+//     async (accessToken, refreshToken, profile, done) => {
+//       let user = await User.findOne({ email: profile.emails[0].value });
+
+//       if (!user) {
+//         user = await User.create({
+//           name: profile.displayName,
+//           email: profile.emails[0].value,
+//           provider: 'google',
+//           googleId: profile.id
+//         });
+//       }
+
+//       return done(null, user);
+//     }
+//   )
+// );
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const User = require('../models/user.model');
+
+/* ================================
+   GOOGLE OAUTH STRATEGY
+================================ */
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: '/auth/google/callback'
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        let user = await User.findOne({
+          email: profile.emails[0].value
+        });
+
+        if (!user) {
+          user = await User.create({
+            name: profile.displayName,
+            email: profile.emails[0].value,
+            provider: 'google',
+            googleId: profile.id
+          });
+        }
+
+        return done(null, user);
+      } catch (err) {
+        return done(err, null);
+      }
+    }
+  )
+);
+
+/* ================================
+   SESSION SERIALIZATION
+================================ */
+
+// 🔐 Runs ONCE after successful login
+passport.serializeUser((user, done) => {
+  done(null, user._id);   // stored in Redis session
+});
+
+// 🔄 Runs on EVERY authenticated request
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findById(id);
+    done(null, user);     // attached to req.user
+  } catch (err) {
+    done(err, null);
+  }
+});
+
+module.exports = passport;

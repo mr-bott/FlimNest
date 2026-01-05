@@ -1,0 +1,27 @@
+<app-slider [data]="movies_data"></app-slider>
+
+<app-carousel [title]="'Recently Viewed'" [isExplore]="false" [exploreLink]="'/movie/category/now_playing'" 
+    [items]="recentlyViewedMovies" [canNavigateLeft]="true" [canNavigateRight]="true">
+</app-carousel>
+
+<app-carousel [title]="'WatchLater Movies'" [isExplore]="false" [exploreLink]="''" 
+    [items]="watchListMovies" [canNavigateLeft]="true" [canNavigateRight]="true">
+</app-carousel>
+
+<app-carousel [title]="'Watched Movies'" [isExplore]="false" [exploreLink]="''" 
+    [items]="watchedMovies" [canNavigateLeft]="true" [canNavigateRight]="true">
+</app-carousel>
+
+<app-carousel [title]="'Recommended Movies'" [isExplore]="false" [exploreLink]="'/movie/category/now_playing'" 
+    [items]="recommendedMovies" [canNavigateLeft]="true" [canNavigateRight]="true">
+</app-carousel>
+
+<app-carousel [title]="'Popular Movies'" [isExplore]="false" [exploreLink]="'/movie/category/now_playing'" 
+    [items]="moviesSlider" [canNavigateLeft]="true" [canNavigateRight]="true">
+</app-carousel>
+
+<app-carousel [title]="'Popular TV Shows'" [isExplore]="false" [exploreLink]="'/tv/category/airing_today'" 
+    [items]="tvSlider" [canNavigateLeft]="true" [canNavigateRight]="true">
+</app-carousel>
+
+

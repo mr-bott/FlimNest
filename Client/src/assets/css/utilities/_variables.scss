@@ -1,0 +1,36 @@
+$font-family--sans-serif: 'Roboto', 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;
+
+// 1rem = 10px
+$base-font-size: 62.5%;
+$base-line-height: 1.6;
+$base-font-family: $font-family--sans-serif;
+$base-font-weight: 400;
+$base-font-style: normal;
+$letter-spacing: 0.4px;
+
+// $base-bg: #0f0415;
+$base-bg: black;
+$base-font-color: #fff;
+$primary-color: #a6db38;
+$secondary-color: #17291C;
+$text-color: #ebd9f8;
+$text-color-grey: #80868b;
+
+/* Base */
+// $base-bg: #0b1220;          // deep navy blue background
+$base-font-color: #e5edff;  // soft off-white (better than pure white)
+
+/* Primary & Secondary */
+$primary-color: #1e97ca;    // bright sky blue (main accent)
+$secondary-color: #0f1e2b;  // dark blue-green for cards/sections
+
+/* Text */
+$text-color: #c7d2fe;       // soft bluish text
+$text-color-grey: #94a3b8;  // muted blue-grey
+
+
+$breakpoint-xsmall: 640px;
+$breakpoint-small: 768px;
+$breakpoint-medium: 1024px;
+$breakpoint-large: 1200px;
+$breakpoint-xlarge: 1400px;

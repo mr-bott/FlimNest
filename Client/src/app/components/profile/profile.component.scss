@@ -1,0 +1,146 @@
+.profile-page {
+  padding: 24px;
+  color: #e5edff;
+  background: #0b1220;
+  min-height: 100vh;
+}
+
+/* TOP SECTION */
+.profile-top {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+/* LEFT */
+.profile-left {
+  flex: 1;
+  background: #0f1e2b;
+  border-radius: 14px;
+  padding: 24px;
+  text-align: center;
+}
+
+.profile-img {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 4px solid #38bdf8;
+  margin-bottom: 12px;
+}
+
+.username {
+  margin: 8px 0 4px;
+}
+
+.email {
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+/* RIGHT */
+.profile-right {
+  flex: 1;
+  background: #0f1e2b;
+  border-radius: 14px;
+  padding: 24px;
+}
+
+.profile-right h3 {
+  margin-bottom: 16px;
+}
+
+.detail {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  color: #c7d2fe;
+}
+
+.edit-btn {
+  margin-top: 16px;
+  padding: 8px 14px;
+  background: #38bdf8;
+  border: none;
+  border-radius: 8px;
+  color: #0b1220;
+  cursor: pointer;
+}
+
+/* ANALYTICS */
+.profile-analytics {
+  background: #0f1e2b;
+  border-radius: 14px;
+  padding: 24px;
+}
+
+.stats {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  flex: 1;
+  background: #13263a;
+  padding: 16px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.stat-card p {
+  font-size: 26px;
+  margin-top: 8px;
+  color: #38bdf8;
+}
+
+/* BAR CHART */
+.chart h4 {
+  margin-bottom: 16px;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.bar span {
+  width: 80px;
+  font-size: 14px;
+}
+
+.bar-fill {
+  height: 10px;
+  border-radius: 6px;
+}
+
+.bar-fill.action { width: 80%; background: #22c55e; }
+.bar-fill.scifi  { width: 65%; background: #38bdf8; }
+.bar-fill.drama  { width: 50%; background: #a855f7; }
+.bar-fill.comedy { width: 35%; background: #facc15; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .profile-top {
+    flex-direction: column;
+  }
+
+  .stats {
+    flex-direction: column;
+  }
+}
+.chart-container {
+  margin-top: 30px;
+  padding: 20px;
+  background: #0f1e2b;
+  border-radius: 14px;
+  max-width: 420px;
+}
+
+.chart-container h4 {
+  margin-bottom: 16px;
+  color: #e5edff;
+  text-align: center;
+}
