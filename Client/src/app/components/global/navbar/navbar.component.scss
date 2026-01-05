@@ -1,0 +1,45 @@
+.navbar a svg path,
+.navbar a svg circle {
+  stroke: #ffffff;
+  fill: none;
+  transition: all 0.3s ease;
+}
+
+.navbar a.active svg path,
+.navbar a.active svg circle {
+  stroke: #1e97ca;
+}
+/* Base */
+.profile-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-icon {
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+/* Ring hidden by default */
+.profile-ring {
+  stroke: #1e97ca;
+  stroke-width: 5;
+  fill: #1e97ca;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* ACTIVE STATE */
+.profile-link.profile-active .profile-icon {
+  transform: scale(1.08);
+  filter: drop-shadow(0 0 8px rgba(30, 151, 202, 0.9));
+}
+
+.profile-link.profile-active .profile-ring {
+  opacity: 1;
+}
+
+/* Hover */
+.profile-link:hover .profile-icon {
+  transform: scale(1.05);
+}

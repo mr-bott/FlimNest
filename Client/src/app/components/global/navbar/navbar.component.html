@@ -1,40 +1,22 @@
-
 <nav class="navbar">
   <ul class="nolist">
     <li>
-      <a [routerLink]="['/']" aria-label="Home">
-        <!-- <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-          <g fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-miterlimit="10"
-            stroke-linejoin="round">
-            <path d="M8.5 23.2H1.3V9L12 .8 22.7 9v14.2h-7.2v-5c0-1.9-1.6-3.4-3.5-3.4s-3.5 1.5-3.5 3.4v5z" />
-          </g>
-        </svg> -->
-      
-<svg
-  xmlns="http://www.w3.org/2000/svg"
-  width="26"
-  height="26"
-  viewBox="0 0 24 24"
->
-  <defs>
-    <linearGradient id="homeGradient" x1="0" y1="0" x2="0" y2="1">
-      <!-- <stop offset="0%" stop-color="#60a5fa" /> -->
-      <!-- <stop offset="100%" stop-color="#2563eb" /> -->
-    </linearGradient>
-  </defs>
+      <a [routerLink]="['/']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" aria-label="Home">
 
-  <path
-    d="M3 10.2L12 3l9 7.2V21a1 1 0 0 1-1 1h-5v-5a3 3 0 0 0-6 0v5H4a1 1 0 0 1-1-1V10.2z"
-    fill="url(#homeGradient)"
-    stroke=" #1e97ca"
-    stroke-width="1.7"
-    stroke-linejoin="round"
-  />
-</svg>
+
+        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">
+          <defs>
+            <linearGradient id="homeGradient" x1="0" y1="0" x2="0" y2="1">
+            </linearGradient>
+          </defs>
+
+          <path d="M3 10.2L12 3l9 7.2V21a1 1 0 0 1-1 1h-5v-5a3 3 0 0 0-6 0v5H4a1 1 0 0 1-1-1V10.2z"
+            fill="url(#homeGradient)" stroke=" #1e97ca" stroke-width="1.7" stroke-linejoin="round" />
+        </svg>
       </a>
     </li>
     <li>
-      <a [routerLink]="['/movie']" aria-label="Movies">
+      <a [routerLink]="['/movie']" routerLinkActive="active" aria-label="Movies">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
           <g fill="none" stroke="#fff" stroke-width="1.5" stroke-miterlimit="10" stroke-linejoin="round"
             stroke-linecap="round">
@@ -46,7 +28,7 @@
       </a>
     </li>
     <li>
-      <a [routerLink]="['/tv']" aria-label="TV Shows">
+      <a [routerLink]="['/tv']" routerLinkActive="active" aria-label="TV Shows">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
           <g fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-miterlimit="10">
             <path
@@ -65,6 +47,51 @@
         </svg>
       </button>
     </li>
+ 
+<li>
+  <a
+    class="profile-link"
+    [routerLink]="['/profile']"
+    routerLinkActive="profile-active"
+    [routerLinkActiveOptions]="{ exact: true }"
+    aria-label="profile"
+  >
+    <svg
+      class="profile-icon"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 128 128"
+      width="40"
+    >
+      <defs>
+        <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#6366F1" />
+          <stop offset="100%" stop-color="#22D3EE" />
+        </linearGradient>
+      </defs>
+
+      <!-- BACKGROUND -->
+      <circle cx="64" cy="64" r="64" fill="url(#grad)" />
+
+      <!-- ACTIVE RING -->
+      <circle
+        class="profile-ring"
+        cx="64"
+        cy="64"
+        r="60"
+        fill="none"
+      />
+
+      <!-- AVATAR -->
+      <circle cx="64" cy="48" r="20" fill="#fff" />
+      <path
+        d="M28 110c4-18 20-30 36-30s32 12 36 30"
+        fill="#fff"
+      />
+    </svg>
+  </a>
+</li>
+
+
   </ul>
 </nav>
 
