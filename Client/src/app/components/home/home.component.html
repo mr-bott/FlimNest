@@ -1,27 +1,29 @@
-<app-slider [data]="movies_data"></app-slider>
+<app-slider *ngIf="movies_data.length > 0" [data]="movies_data">
+</app-slider>
 
-<app-carousel [title]="'Recently Viewed'" [isExplore]="false" [exploreLink]="'/movie/category/now_playing'" 
-    [items]="recentlyViewedMovies" [canNavigateLeft]="true" [canNavigateRight]="true">
+<app-carousel *ngIf="recentlyViewedMovies.length > 0" [title]="'Recently Viewed'" [isExplore]="false"
+    [exploreLink]="'/movie/category/now_playing'" [items]="recentlyViewedMovies" [canNavigateLeft]="true"
+    [canNavigateRight]="true">
 </app-carousel>
 
-<app-carousel [title]="'WatchLater Movies'" [isExplore]="false" [exploreLink]="''" 
+<app-carousel *ngIf="watchListMovies.length > 0" [title]="'WatchLater Movies'" [isExplore]="false" [exploreLink]="''"
     [items]="watchListMovies" [canNavigateLeft]="true" [canNavigateRight]="true">
 </app-carousel>
 
-<app-carousel [title]="'Watched Movies'" [isExplore]="false" [exploreLink]="''" 
+<app-carousel *ngIf="watchedMovies.length > 0" [title]="'Watched Movies'" [isExplore]="false" [exploreLink]="''"
     [items]="watchedMovies" [canNavigateLeft]="true" [canNavigateRight]="true">
 </app-carousel>
 
-<app-carousel [title]="'Recommended Movies'" [isExplore]="false" [exploreLink]="'/movie/category/now_playing'" 
-    [items]="recommendedMovies" [canNavigateLeft]="true" [canNavigateRight]="true">
+<app-carousel *ngIf="recommendedMovies.length > 0" [title]="'Recommended Movies'" [isExplore]="false"
+    [exploreLink]="'/movie/category/now_playing'" [items]="recommendedMovies" [canNavigateLeft]="true"
+    [canNavigateRight]="true">
 </app-carousel>
 
-<app-carousel [title]="'Popular Movies'" [isExplore]="false" [exploreLink]="'/movie/category/now_playing'" 
-    [items]="moviesSlider" [canNavigateLeft]="true" [canNavigateRight]="true">
+<app-carousel *ngIf="moviesSlider.length > 0" [title]="'Popular Movies'" [isExplore]="false"
+    [exploreLink]="'/movie/category/now_playing'" [items]="moviesSlider" [canNavigateLeft]="true"
+    [canNavigateRight]="true">
 </app-carousel>
 
-<app-carousel [title]="'Popular TV Shows'" [isExplore]="false" [exploreLink]="'/tv/category/airing_today'" 
-    [items]="tvSlider" [canNavigateLeft]="true" [canNavigateRight]="true">
+<app-carousel *ngIf="tvSlider.length > 0" [title]="'Popular TV Shows'" [isExplore]="false"
+    [exploreLink]="'/tv/category/airing_today'" [items]="tvSlider" [canNavigateLeft]="true" [canNavigateRight]="true">
 </app-carousel>
-
-
