@@ -1,4 +1,11 @@
-<div class="profile-page" *ngIf="user && stats">
+<!-- <div class="chart-container">
+    <h4>Genre Distribution</h4>
+    <canvas id="piechart"></canvas>
+  </div> -->
+
+  <!-- <div class="profile-page"> -->
+    <div class="profile-page" [hidden]="!user || !stats">
+
 
   <!-- TOP SECTION -->
   <div class="profile-top">
@@ -59,18 +66,19 @@
     </div>
 
     <!-- BAR CHART -->
-    <div class="chart" *ngIf="topGenres?.length">
-      <h4>Top Genres</h4>
+    <div class="chart" >
+      <!-- <h4>Top Genres</h4>
 
       <div class="bar" *ngFor="let genre of topGenres">
         <span>{{ genreMap[genre.genreId] || 'Genre ' + genre.genreId }}</span>
 
         <div class="bar-fill" [style.width.%]="genre.count * 10"></div>
-      </div>
+      </div> -->
       <!-- PIE CHART -->
       <div class="chart-container">
         <h4>Genre Distribution</h4>
-        <canvas #genreChart></canvas>
+        <canvas id="piechart"></canvas>
+       
       </div>
 
 
@@ -78,4 +86,4 @@
 
   </div>
 
-</div>
+</div> 
