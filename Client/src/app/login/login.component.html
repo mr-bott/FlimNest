@@ -1,8 +1,27 @@
-<div class="login-container">
+<!-- <div class="login-container">
   <h2>Login</h2>
 
   <button class="google-btn" (click)="googleLogin()">
     <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google">
     Continue with Google
   </button>
+</div> -->
+
+<div class="login-wrapper">
+  <div class="login-card">
+    <h2>Welcome Back</h2>
+    <p class="subtitle">Sign in to continue</p>
+
+    <button class="google-btn" (click)="googleLogin()">
+      <img
+        src="https://developers.google.com/identity/images/g-logo.png"
+        alt="Google logo"
+      />
+      <span>Continue with Google</span>
+    </button>
+
+    <p class="footer-text">
+      Secure login powered by Google OAuth
+    </p>
+  </div>
 </div>

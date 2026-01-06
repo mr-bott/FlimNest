@@ -11,6 +11,7 @@ const watchedMovie = require("./routes/recentlyViewed.routes");
 const recommendRoutes = require("./routes/recommended.routes");
 const userMediaRoutes = require("./routes/userMedia.routes");
 const profileRoutes = require("./routes/profile.routes");
+const authenticateRoutes = require("./routes/authenticate.routes");
 const rateLimiter = require("./middleware/reteLimiter.middleware");
 const redisClient = require("./rateLimiter/redisClient");
 
@@ -60,7 +61,7 @@ connectDB();
 
 
 app.use("/auth", require("./routes/auth"));
-
+app.use("/api/authenticate", authenticateRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/recently", watchedMovie);
 app.use("/api/recommend", recommendRoutes);
