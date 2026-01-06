@@ -3,16 +3,13 @@
     <canvas id="piechart"></canvas>
   </div> -->
 
-  <!-- <div class="profile-page"> -->
-    <div class="profile-page" [hidden]="!user || !stats">
-
-
+<!-- <div class="profile-page"> -->
+<div class="profile-page" [hidden]="!user || !stats">
   <!-- TOP SECTION -->
   <div class="profile-top">
-
     <!-- LEFT : PROFILE IMAGE -->
     <div class="profile-left">
-      <img src={{user.profilePic}} alt="Profile" class="profile-img" />
+      <img src="{{ user.profilePic }}" alt="Profile" class="profile-img" />
 
       <h2 class="username">{{ user.name }}</h2>
       <p class="email">{{ user.email }}</p>
@@ -24,7 +21,7 @@
 
       <div class="detail">
         <span>Joined</span>
-        <strong>{{ user.joinedAt | date:'MMM yyyy' }}</strong>
+        <strong>{{ user.joinedAt | date : "MMM yyyy" }}</strong>
       </div>
 
       <div class="detail">
@@ -39,14 +36,12 @@
 
       <button class="edit-btn">Edit Profile</button>
     </div>
-
   </div>
 
   <!-- BOTTOM : ANALYTICS -->
   <div class="profile-analytics">
-
     <h3>Analytics</h3>
-
+<div class ="view-stats-charts">
     <!-- STATS CARDS -->
     <div class="stats">
       <div class="stat-card">
@@ -66,7 +61,7 @@
     </div>
 
     <!-- BAR CHART -->
-    <div class="chart" >
+    <div class="chart">
       <!-- <h4>Top Genres</h4>
 
       <div class="bar" *ngFor="let genre of topGenres">
@@ -78,12 +73,30 @@
       <div class="chart-container">
         <h4>Genre Distribution</h4>
         <canvas id="piechart"></canvas>
-       
       </div>
-
-
     </div>
+</div>    
 
+    <app-carousel
+      *ngIf="watchListMovies.length > 0"
+      [title]="'WatchLater Movies'"
+      [isExplore]="false"
+      [exploreLink]="''"
+      [items]="watchListMovies"
+      [canNavigateLeft]="true"
+      [canNavigateRight]="true"
+    >
+    </app-carousel>
+
+    <app-carousel
+      *ngIf="watchedMovies.length > 0"
+      [title]="'Watched Movies'"
+      [isExplore]="false"
+      [exploreLink]="''"
+      [items]="watchedMovies"
+      [canNavigateLeft]="true"
+      [canNavigateRight]="true"
+    >
+    </app-carousel>
   </div>
-
-</div> 
+</div>
