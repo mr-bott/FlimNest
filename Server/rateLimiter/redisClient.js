@@ -11,6 +11,7 @@ redisClient.on('error', (err) => {
 
 (async () => {
   await redisClient.connect();
+  console.log("Redis Connected Successfully");
 })();
 
 module.exports = redisClient;

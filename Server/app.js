@@ -49,12 +49,12 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(
-  rateLimiter({
-    windowSeconds: 60,
-    maxRequests: 100,
-  })
-);
+// app.use(
+//   rateLimiter({
+//     windowSeconds: 60,
+//     maxRequests: 100,
+//   })
+// );
 
 const connectDB = require("./config/db");
 connectDB();

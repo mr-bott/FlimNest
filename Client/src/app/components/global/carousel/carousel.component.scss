@@ -1,0 +1,97 @@
+/* ===============================
+   Action Buttons Container
+================================ */
+.action-buttons {
+  display: flex;
+  gap: 3px;
+  margin-top: 8px;
+  flex-wrap: nowrap; /* never stack */
+}
+
+/* ===============================
+   Base Button Style
+================================ */
+.btn {
+  flex: 1; /* equal width */
+  min-width: 0; /* prevent overflow merging */
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 6px 8px;
+  border-radius: 6px;
+
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  cursor: pointer;
+  user-select: none;
+
+  border: 1px solid transparent;
+  background-color: transparent;
+  color: #e5edff;
+
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    color 0.2s ease, transform 0.15s ease;
+}
+
+/* ===============================
+   Button Variants
+================================ */
+.btn.watched {
+  background-color: rgba(30, 151, 202, 0.15);
+  border-color: rgba(30, 151, 202, 0.6);
+  color: #1e97ca;
+}
+.btn.like {
+  background-color: rgba(30, 151, 202, 0.15);
+  border-color: rgba(30, 151, 202, 0.6);
+  color: #1e97ca;
+}
+
+.btn.later {
+  background-color: #0f1e2b;
+  border-color: rgba(148, 163, 184, 0.4);
+  color: #c7d2fe;
+}
+
+.btn.delete {
+  background-color: #0f1e2b;
+  border-color: rgba(148, 163, 184, 0.4);
+  color: #c7d2fe;
+}
+
+/* ===============================
+   Interaction States
+================================ */
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: scale(0.96);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ===============================
+   Mobile Optimization
+================================ */
+@media (max-width: 480px) {
+  .action-buttons {
+    gap: 6px;
+  }
+
+  .btn {
+    padding: 6px;
+    font-size: 10px;
+  }
+}
