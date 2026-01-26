@@ -14,6 +14,7 @@ export class MoviesComponent implements OnInit {
   recommendedMovies: any[] = [];
   watchedMovies: any[] = [];
   watchListMovies: any[] = [];
+  likedMovies:any[]=[];
 
   movieCategories: { [key: string]: any[] } = {
     nowPlayingMovies: [],
@@ -52,6 +53,17 @@ export class MoviesComponent implements OnInit {
           title: item.title,
           rating: item.rating ? item.rating * 10 : 0,
           vote: item.rating,
+          liked:item.liked
+        }));
+        this.likedMovies= res.filter((item: any) => item.liked).map((item: any) => ({
+          link: `/movie/${item.tmdbId}`,
+          imgSrc: item.posterPath
+            ? `https://image.tmdb.org/t/p/w500${item.posterPath}`
+            : null,
+          title: item.title,
+          rating: item.rating ? item.rating * 10 : 0,
+          vote: item.rating,
+          liked:item.liked
         }));
       },
       (error) => {

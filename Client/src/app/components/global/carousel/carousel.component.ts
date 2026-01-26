@@ -33,7 +33,7 @@ export class CarouselComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() exploreLink!: string;
   @Input() items: any[] = [];
   @Input() infoLink!: string;
-  @Input() carouselType!: 'watchlist' | 'watched' | 'default';
+  @Input() carouselType!: 'watchlist' | 'watched' | 'default'| 'liked';
   @Input() mediaType!: 'movie' | 'tv';
   @Input() isCastCarousel = false;
   @Input() isDefaultCarousel = true;
@@ -132,12 +132,16 @@ export class CarouselComponent implements AfterViewInit, OnChanges, OnDestroy {
     return this.carouselType === 'default' && !item.status;
   }
 
-  showLikeBtn() {
-    return this.carouselType === 'watched';
+  showLikeBtn(item:any) {
+    return this.carouselType === 'watched' && item.liked===false;
+  }
+  
+  showUnLikeBtn(item:any) {
+    return item.liked===true;
   }
 
   showDeleteBtn() {
-    return this.carouselType === 'watched' || this.carouselType === 'watchlist';
+    return (this.carouselType === 'watched' || this.carouselType === 'watchlist') ;
   }
 
   markAsWatched(item: any, event: Event) {
@@ -155,12 +159,9 @@ export class CarouselComponent implements AfterViewInit, OnChanges, OnDestroy {
       genres: [],
     };
 
-    console.log('Mark watched payload:', payload);
-
     this.actionsService.addMedia(payload).subscribe({
       next: () => {
         item.status = 'watched';
-        console.log('Marked as watched');
       },
       error: (err) => console.error(err),
     });
@@ -180,31 +181,28 @@ export class CarouselComponent implements AfterViewInit, OnChanges, OnDestroy {
       genres: [],
     };
 
-    console.log('Adding to watchlist with payload:', payload);
-
     this.actionsService.addMedia(payload).subscribe({
       next: () => {
         item.status = 'watchlist'; // UI update
-        console.log('Added to watchlist');
       },
       error: (err) => console.error(err),
     });
   }
-  //   toggleLike(item: any, event: Event) {
-  //   event.preventDefault();
-  //   event.stopPropagation();
+  toggleLike(item: any, event: Event) {
+    event.preventDefault();
+    event.stopPropagation();
 
-  //   const payload = {
-  //     tmdbId: item.tmdbId || item.id,
-  //     liked: !item.liked
-  //   };
+    const payload = {
+      tmdbId: this.getTmdbId(item),
+      liked: !item.liked,
+    };
 
-  //   this.actionsService.toggleLike(payload).subscribe({
-  //     next: () => {
-  //       item.liked = !item.liked; // ✅ update UI
-  //       console.log('Like toggled');
-  //     },
-  //     error: err => console.error(err)
-  //   });
-  // }
+    this.actionsService.toggleLike(payload).subscribe({
+      next: () => {
+        item.liked = !item.liked;
+      },
+
+      error: (err) => console.error(err),
+    });
+  }
 }

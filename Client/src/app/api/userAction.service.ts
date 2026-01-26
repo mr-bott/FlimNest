@@ -10,14 +10,20 @@ export class UserActionsService {
   // ONE API for watched + watchlist
   addMedia(data: any) {
     return this.http.post(`${this.baseUrl}/media`, data, {
-      withCredentials: true
+      withCredentials: true,
     });
   }
 
   getStatus(tmdbId: number, mediaType: string) {
     return this.http.get<any>(`${this.baseUrl}/media/status/${tmdbId}`, {
       params: { tmdbId, mediaType },
-      withCredentials: true
+      withCredentials: true,
     });
   }
+  // TOGGLE LIKE API
+  toggleLike(data: { tmdbId: number; liked: boolean }) {
+    return this.http.put(`${this.baseUrl}/media/${data.tmdbId}/like`, data, {
+      withCredentials: true,
+    });
   }
+}

@@ -9,7 +9,6 @@ exports.getUserProfile = async (req, res) => {
     const cacheKey = `userProfile:${userId}`;
     const cachedProfile = await redisClient.get(cacheKey);
     if (cachedProfile) {
-      console.log("Serving profile from cache");
       return res.json(JSON.parse(cachedProfile));
     }
 

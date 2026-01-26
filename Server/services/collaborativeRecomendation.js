@@ -12,10 +12,10 @@ exports.getCollaborativeRecommendations = async (
   threshold = 0.3,
   limit = 10
 ) => {
-  // 1️⃣ Fetch all users' watched data
+  //  Fetch all users' watched data
   const allUsersData = await WatchedMovie.find();
 
-  // 2️⃣ Get target user's data
+  //  Get target user's data
   const target = allUsersData.find(
     u => u.user.toString() === userId
   );
@@ -30,7 +30,7 @@ exports.getCollaborativeRecommendations = async (
 
   const similarUsers = [];
 
-  // 3️⃣ Find similar users
+  //  Find similar users
   for (const other of allUsersData) {
     if (other.user.toString() === userId) continue;
 
@@ -48,7 +48,7 @@ exports.getCollaborativeRecommendations = async (
     }
   }
 
-  // 4️⃣ Collect candidate recommendations
+  //  Collect candidate recommendations
   const recommendationMap = new Map();
 
   for (const user of similarUsers) {
@@ -64,7 +64,7 @@ exports.getCollaborativeRecommendations = async (
     }
   }
 
-  // 5️⃣ Sort & limit
+  //  Sort & limit
   return [...recommendationMap.values()]
     .sort((a, b) => b.score - a.score)
     .slice(0, limit);

@@ -86,7 +86,8 @@
           <button *ngIf="showWatchLaterBtn(item)" class="btn later"  (click)="addToWatchLater(item, $event)">
             Watch Later
           </button>
-          <button *ngIf="showLikeBtn()" class="btn like"> Like</button>
+          <button *ngIf="showLikeBtn(item)"   (click)="toggleLike(item, $event)"class="btn like"> Like</button>
+           <button *ngIf="showUnLikeBtn(item)"   (click)="toggleLike(item, $event)"class="btn delete"> UnLike</button>
           <button *ngIf="showDeleteBtn()" class="btn delete">Delete</button>
         </div>
       </div>

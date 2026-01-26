@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ApiService } from '../../api/api.service';
+import { UserActionsService } from '../../api/userAction.service';
 import { delay } from 'rxjs/operators';
 import { NgxSpinnerService } from 'ngx-spinner';
 
@@ -10,6 +11,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 })
 export class TvComponent {
   tv_data: any[] = [];
+  recentlyViewed:any[]=[];
   tvCategories: { [key: string]: any[] } = {
     onTheAirTv: [],
     popularTv: [],
@@ -17,7 +19,7 @@ export class TvComponent {
     topRatedTv: []
   };
 
-  constructor(private apiService: ApiService, private spinner: NgxSpinnerService) { }
+  constructor(private apiService: ApiService, private userActions: UserActionsService, private spinner: NgxSpinnerService) { }
 
   ngOnInit() {
     this.spinner.show();
@@ -33,6 +35,7 @@ export class TvComponent {
     this.fetchMovies('top_rated', 'topRatedTv');
     this.fetchMovies('on_the_air', 'onTheAirTv');
     this.fetchMovies('airing_today', 'airingTodayTv');
+    this.getrecentlyViewedTvs();
     
   }
 
@@ -66,6 +69,28 @@ export class TvComponent {
     }
   );
 }
+
+  // recently viewed movies
+  getrecentlyViewedTvs() {
+    this.apiService.getRecentlyViewedMovies().subscribe(
+      (res: any) => {
+        this.recentlyViewed = res.filter((item: any) => item.mediaType === 'tv').map((item: any) => ({
+          link: `/tv/${item.tmdbId}`,
+          imgSrc: item.posterPath
+            ? `https://image.tmdb.org/t/p/w500${item.posterPath}`
+            : null,
+          title: item.title,
+          rating: item.rating ? item.rating * 10 : 0,
+          vote: item.rating,
+        }));
+      },
+      (error) => {
+        console.error('Error fetching recently viewed movies', error);
+      },
+      
+    );
+   
+  }
 
   fetchMovies(category: string, property: string): void {
     this.apiService.getCategory(category, 1, 'tv')

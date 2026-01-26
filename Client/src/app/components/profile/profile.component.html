@@ -21,7 +21,7 @@
 
       <div class="detail">
         <span>Joined</span>
-        <strong>{{ user.joinedAt | date : "MMM yyyy" }}</strong>
+        <strong>{{ user.joinedAt | date: "MMM yyyy" }}</strong>
       </div>
 
       <div class="detail">
@@ -41,42 +41,53 @@
   <!-- BOTTOM : ANALYTICS -->
   <div class="profile-analytics">
     <h3>Analytics</h3>
-<div class ="view-stats-charts">
-    <!-- STATS CARDS -->
-    <div class="stats">
-      <div class="stat-card">
-        <h4>🎬 Watched</h4>
-        <p>{{ stats.watchedCount }}</p>
+    <div class="view-stats-charts">
+      <!-- STATS CARDS -->
+      <div class="stats">
+        <div class="stat-card">
+          <h4>🎬 Watched</h4>
+          <p>{{ stats.watchedCount }}</p>
+        </div>
+
+        <div class="stat-card">
+          <h4>❤️ Liked</h4>
+          <p>{{ stats.likedCount }}</p>
+        </div>
+
+        <div class="stat-card">
+          <h4>⏰ Watchlist</h4>
+          <p>{{ stats.watchlistCount }}</p>
+        </div>
       </div>
 
-      <div class="stat-card">
-        <h4>❤️ Liked</h4>
-        <p>{{ stats.likedCount }}</p>
-      </div>
-
-      <div class="stat-card">
-        <h4>⏰ Watchlist</h4>
-        <p>{{ stats.watchlistCount }}</p>
-      </div>
-    </div>
-
-    <!-- BAR CHART -->
-    <div class="chart">
-      <!-- <h4>Top Genres</h4>
+      <!-- BAR CHART -->
+      <div class="chart">
+        <!-- <h4>Top Genres</h4>
 
       <div class="bar" *ngFor="let genre of topGenres">
         <span>{{ genreMap[genre.genreId] || 'Genre ' + genre.genreId }}</span>
 
         <div class="bar-fill" [style.width.%]="genre.count * 10"></div>
       </div> -->
-      <!-- PIE CHART -->
-      <div class="chart-container">
-        <h4>Genre Distribution</h4>
-        <canvas id="piechart"></canvas>
+        <!-- PIE CHART -->
+        <div class="chart-container">
+          <h4>Genre Distribution</h4>
+          <canvas id="piechart"></canvas>
+        </div>
       </div>
     </div>
-</div>    
 
+    <app-carousel
+      *ngIf="likedMovies.length > 0"
+      [title]="'Liked Movies'"
+      [isExplore]="false"
+      [exploreLink]="''"
+      [items]="likedMovies"
+      [canNavigateLeft]="true"
+      [canNavigateRight]="true"
+      [carouselType]="'liked'"
+    > 
+    </app-carousel>
     <app-carousel
       *ngIf="watchListMovies.length > 0"
       [title]="'WatchLater Movies'"

@@ -5,6 +5,7 @@ const redisClient = require("../rateLimiter/redisClient");
 exports.addWatchedMovie = async (req, res) => {
   const { tmdbId, mediaType, title, posterPath, rating, genres } = req.body;
   const userId = req.user.id;
+
   const cacheKey = `watched:user:${userId}`;
 
   try {
@@ -49,48 +50,48 @@ exports.addWatchedMovie = async (req, res) => {
       });
     }
 
-    // WRITE-THROUGH CACHE
+    //  WRITE-THROUGH CACHE (ALWAYS UPDATE)
     await redisClient.set(
       cacheKey,
       JSON.stringify(record.watchedMovies),
-      { EX: 3600 }
+      { EX: 3600 } // 1 hour TTL
     );
 
-    res.status(201).json(record.watchedMovies);
+    return res.status(201).json(record.watchedMovies);
+
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 };
-
 
 exports.getWatchedMovies = async (req, res) => {
   const userId = req.user.id;
   const cacheKey = `watched:user:${userId}`;
 
   try {
-    // Check cache
+    //  Cache first
     const cachedData = await redisClient.get(cacheKey);
     if (cachedData) {
       return res.json(JSON.parse(cachedData));
     }
 
-    // DB fallback
-    const data = await WatchedMovie.findOne({ user: userId });
+    //  DB fallback
+    const record = await WatchedMovie.findOne({ user: userId });
+    const watchedMovies = record?.watchedMovies || [];
 
-    const watchedMovies = data?.watchedMovies || [];
-
-    // Store in cache
+    //  Write-through cache
     await redisClient.set(
       cacheKey,
       JSON.stringify(watchedMovies),
       { EX: 3600 }
     );
 
-    res.json(watchedMovies);
+    return res.json(watchedMovies);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 };
+
 
 exports.deleteWatchedMovie = async (req, res) => {
   const { tmdbId } = req.params;
@@ -98,6 +99,7 @@ exports.deleteWatchedMovie = async (req, res) => {
   const cacheKey = `watched:user:${userId}`;
 
   try {
+    // Update DB
     const updated = await WatchedMovie.findOneAndUpdate(
       { user: userId },
       {
@@ -112,18 +114,18 @@ exports.deleteWatchedMovie = async (req, res) => {
       return res.status(404).json({ message: "Watch history not found" });
     }
 
-    // UPDATE CACHE AFTER DELETE
+    //  Write-through cache
     await redisClient.set(
       cacheKey,
       JSON.stringify(updated.watchedMovies),
       { EX: 3600 }
     );
 
-    res.json({
+    return res.json({
       message: "Movie removed from watched list",
       watchedMovies: updated.watchedMovies,
     });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: err.message });
   }
 };

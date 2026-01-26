@@ -19,7 +19,7 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private apiService: ApiService,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
   ) {}
 
   ngOnInit() {
@@ -38,49 +38,49 @@ export class HomeComponent implements OnInit {
   }
 
   //watched movies
-getWatchedMovies() {
-  this.apiService.getWatchedMovies().subscribe(
-    (res: any) => {
-      this.watchedMovies = res.map((item: any) => ({
-        link: `/movie/${item.tmdbId}`,
-        imgSrc: item.posterPath
-          ? `https://image.tmdb.org/t/p/w500${item.posterPath}`
-          : null,
-        title: item.title,
-        rating: item.rating ? item.rating * 10 : 0,
-        vote: item.rating
-      }));
-    },
-    (error) => {
-      console.error('Error fetching watched movies', error);
-    }
-  );
-}
-//watchlist
-getWatchListMovies() {
-  this.apiService.getWatchListMovies().subscribe(
-    (res: any) => {
-      this.watchListMovies = res.map((item: any) => ({
-        link: `/movie/${item.tmdbId}`,
-        imgSrc: item.posterPath
-          ? `https://image.tmdb.org/t/p/w500${item.posterPath}`
-          : null,
-        title: item.title,
-        rating: item.rating ? item.rating * 10 : 0,
-        vote: item.rating
-      }));
-    },
-    (error) => {
-      console.error('Error fetching watched movies', error);
-    }
-  );
-}
+  getWatchedMovies() {
+    this.apiService.getWatchedMovies().subscribe(
+      (res: any) => {
+        this.watchedMovies = res.map((item: any) => ({
+          link: `/movie/${item.tmdbId}`,
+          imgSrc: item.posterPath
+            ? `https://image.tmdb.org/t/p/w500${item.posterPath}`
+            : null,
+          title: item.title,
+          rating: item.rating ? item.rating * 10 : 0,
+          vote: item.rating,
+          liked: item.liked,
+        }));
+      },
+      (error) => {
+        console.error('Error fetching watched movies', error);
+      },
+    );
+  }
+  //watchlist
+  getWatchListMovies() {
+    this.apiService.getWatchListMovies().subscribe(
+      (res: any) => {
+        this.watchListMovies = res.map((item: any) => ({
+          link: `/movie/${item.tmdbId}`,
+          imgSrc: item.posterPath
+            ? `https://image.tmdb.org/t/p/w500${item.posterPath}`
+            : null,
+          title: item.title,
+          rating: item.rating ? item.rating * 10 : 0,
+          vote: item.rating,
+        }));
+      },
+      (error) => {
+        console.error('Error fetching watched movies', error);
+      },
+    );
+  }
 
   //recomanded movies
   getRecommendedMovies() {
     this.apiService.getRecommendedMovies().subscribe(
       (res: any) => {
-        console.log("Recommended Movies Response:", res);
         this.recommendedMovies = res.map((item: any) => ({
           link: `/movie/${item.id}`,
           imgSrc: item.poster_path
@@ -93,30 +93,29 @@ getWatchListMovies() {
       },
       (error) => {
         console.error('Error fetching recommended movies', error);
-      }
+      },
     );
   }
 
   // recently viewed movies
   getrecentlyViewedMovies() {
-  this.apiService.getRecentlyViewedMovies().subscribe(
-    (res: any) => {
-      this.recentlyViewedMovies = res.map((item: any) => ({
-        link: `/movie/${item.tmdbId}`,
-        imgSrc: item.posterPath
-          ? `https://image.tmdb.org/t/p/w500${item.posterPath}`
-          : null,
-        title: item.title,
-        rating: item.rating ? item.rating * 10 : 0,
-        vote: item.rating
-      }));
-    },
-    (error) => {
-      console.error('Error fetching recently viewed movies', error);
-    }
-  );
-}
-
+    this.apiService.getRecentlyViewedMovies().subscribe(
+      (res: any) => {
+        this.recentlyViewedMovies = res.map((item: any) => ({
+          link: `/movie/${item.tmdbId}`,
+          imgSrc: item.posterPath
+            ? `https://image.tmdb.org/t/p/w500${item.posterPath}`
+            : null,
+          title: item.title,
+          rating: item.rating ? item.rating * 10 : 0,
+          vote: item.rating,
+        }));
+      },
+      (error) => {
+        console.error('Error fetching recently viewed movies', error);
+      },
+    );
+  }
 
   // Slider Data
   getNowPlaying(mediaType: 'movie', page: number) {
@@ -136,7 +135,8 @@ getWatchListMovies() {
             this.apiService.getYouTubeVideo(item.id, 'movie').subscribe(
               (videoRes: any) => {
                 const video = videoRes.results.find(
-                  (vid: any) => vid.site === 'YouTube' && vid.type === 'Trailer'
+                  (vid: any) =>
+                    vid.site === 'YouTube' && vid.type === 'Trailer',
                 );
                 if (video) {
                   movieItem.videoId = video.key; // Set the video key if available
@@ -145,9 +145,9 @@ getWatchListMovies() {
               (videoError) => {
                 console.error(
                   'Error fetching YouTube video for Movie:',
-                  videoError
+                  videoError,
                 );
-              }
+              },
             );
 
             return movieItem;
@@ -155,7 +155,7 @@ getWatchListMovies() {
         },
         (error) => {
           console.error('Error fetching now playing data', error);
-        }
+        },
       );
   }
 
@@ -186,7 +186,7 @@ getWatchListMovies() {
       },
       (error) => {
         console.error(`Error fetching trending ${type}:`, error);
-      }
+      },
     );
   }
 }

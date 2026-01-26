@@ -53,11 +53,12 @@ export class TvInfoComponent implements OnInit {
   getTvInfo(id: number) {
     this.apiService.getTvShow(id).subscribe((result: any) => {
       this.tv_data = result;
-       this.saveWatchedMovie(this.tv_data);
+       this.saveWatchedTv(this.tv_data);
       this.getExternal(id);
     });
   }
-saveWatchedMovie(tv: any) {
+
+saveWatchedTv(tv: any) {
     const payload = {
       tmdbId: tv.id,
       mediaType: 'tv',
@@ -66,11 +67,10 @@ saveWatchedMovie(tv: any) {
       rating: tv.vote_average,
       genres: tv.genres?.map((g: any) => g.id) || []
     };
-
     this.http.post(
-      `${environment.serverUrl}/watched`,
+      `${environment.serverUrl}/recently`,
       payload,
-      { withCredentials: true } // ✅ cookie-based auth
+      { withCredentials: true } // cookie-based auth
     ).subscribe({
       next: () => {
         // silent success
