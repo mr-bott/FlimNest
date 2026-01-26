@@ -5,6 +5,21 @@
      [carouselType]="'default'">
 </app-carousel>
 
+<app-carousel [title]="'Watched Movies'" [isExplore]="false" [exploreLink]="'/movie/category/popular'" 
+    [items]="watchedMovies" [canNavigateLeft]="true" [canNavigateRight]="true"
+     [carouselType]="'watched'">
+</app-carousel>
+
+<app-carousel [title]="'Watch Later Movies'" [isExplore]="false" [exploreLink]="'/movie/category/popular'" 
+    [items]="watchListMovies" [canNavigateLeft]="true" [canNavigateRight]="true"
+     [carouselType]="'watchlist'">
+</app-carousel>
+
+<app-carousel [title]="'Recommended Movies'" [isExplore]="false" [exploreLink]="'/movie/category/popular'" 
+    [items]="recommendedMovies" [canNavigateLeft]="true" [canNavigateRight]="true"
+     [carouselType]="'default'">
+</app-carousel>
+
 <app-carousel [title]="'Popular Movies'" [isExplore]="false" [exploreLink]="'/movie/category/popular'" 
     [items]="movieCategories['popularMovies']" [canNavigateLeft]="true" [canNavigateRight]="true"
     [carouselType]="'default'">

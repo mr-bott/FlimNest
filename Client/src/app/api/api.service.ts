@@ -26,14 +26,13 @@ export class ApiService {
       withCredentials: true, // IMPORTANT for cookies/JWT
     });
   }
-  
+
   getWatchedMovies() {
     return this.http.get(`${this.serverUrl}/media/watched`, {
       withCredentials: true, // IMPORTANT for cookies/JWT
     });
   }
 
-  
   getWatchListMovies() {
     return this.http.get(`${this.serverUrl}/media/watchlist`, {
       withCredentials: true, // IMPORTANT for cookies/JWT
@@ -50,7 +49,7 @@ export class ApiService {
   getCategory(
     category: string,
     page: number,
-    mediaType: string
+    mediaType: string,
   ): Observable<any> {
     const params = this.buildParams({ page: page.toString() });
     return this.http
@@ -128,7 +127,7 @@ export class ApiService {
   getMediaByGenre(
     media: string,
     genreId: number,
-    page: number
+    page: number,
   ): Observable<any> {
     const params = this.buildParams({
       page: page.toString(),

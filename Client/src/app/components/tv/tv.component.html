@@ -1,14 +1,13 @@
 <app-slider [data]="tv_data"></app-slider>
 
 <app-carousel [title]="'Popular TV Shows'" [isExplore]="false" [exploreLink]="'/tv/category/popular'"
-    [items]="tvCategories['popularTv']" [canNavigateLeft]="true" [canNavigateRight]="true">
+    [items]="tvCategories['popularTv']"
+    [canNavigateLeft]="true" [canNavigateRight]="true">
 </app-carousel>
-
 
 <app-carousel [title]="'Top Rated TV Shows'" [isExplore]="false" [exploreLink]="'/tv/category/top_rated'"
     [items]="tvCategories['topRatedTv']" [canNavigateLeft]="true" [canNavigateRight]="true">
 </app-carousel>
-
 
 <app-carousel [title]="'Currently Airing TV Shows'" [isExplore]="false" [exploreLink]="'/tv/category/on_the_air'"
     [items]="tvCategories['onTheAirTv']" [canNavigateLeft]="true" [canNavigateRight]="true">

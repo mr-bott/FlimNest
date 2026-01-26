@@ -27,8 +27,8 @@ export class HomeComponent implements OnInit {
     this.fetchTrendingContent('movie', 1, 'movies');
     this.fetchTrendingContent('tv', 1, 'tvShows');
     this.getNowPlaying('movie', 1);
-    this.getRecommendedMovies();
     this.getrecentlyViewedMovies();
+    this.getRecommendedMovies();
     this.getWatchedMovies();
     this.getWatchListMovies();
 

@@ -26,7 +26,7 @@ export class MoviesInfoComponent implements OnInit {
   availability: any;
   type: 'movie' = 'movie';
 
-  // ✅ HttpClient injected
+  // HttpClient injected
   constructor(
     private apiService: ApiService,
     private router: ActivatedRoute,
@@ -69,7 +69,7 @@ ngOnInit() {
     this.apiService.getMovie(id).subscribe((result: any) => {
       this.movie_data = result;
 
-      // ✅ SAVE WATCHED MOVIE
+      //  SAVE WATCHED MOVIE
       this.saveWatchedMovie(this.movie_data);
 
       // Fetch YouTube trailer
@@ -96,7 +96,7 @@ ngOnInit() {
     });
   }
 
-  // 👁️ SAVE WATCHED MOVIE API
+  // SAVE WATCHED MOVIE API
 
   saveWatchedMovie(movie: any) {
     const payload = {
@@ -111,7 +111,7 @@ ngOnInit() {
     this.http.post(
       `${environment.serverUrl}/recently`,
       payload,
-      { withCredentials: true } // ✅ cookie-based auth
+      { withCredentials: true } // cookie-based auth
     ).subscribe({
       next: () => {
         // silent success
